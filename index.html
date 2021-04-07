@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Ali's Cloth</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <style>
+        .judul h3 {
+            width: 100%;
+            text-align: center;
+            border-bottom: 3px solid #1E1E24;
+            line-height: 0.1em;
+            margin: 10px 0 20px;
+        }
+        
+        .judul h3 span {
+            background: #fff;
+            padding: 0 10px;
+        }
+        
+        .navbar {
+            transition: top 0.5s ease;
+        }
+        
+        .navbar-hide {
+            top: -56px;
+        }
+        
+        .btn-beli {
+            background-color: #a5855e;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">Ali's Cloth</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Hero Carousel -->
+        <div id="carouselExampleControlsNoTouching" class="carousel slide" data-touch="false" data-interval="false">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="img/carousel-cover-img.jpg" class="d-block w-100 img-fluid">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1>Murah & Elegant</h1>
+                        <p>Some representative placeholder content for the first slide.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="input-group mt-5">
+                <input v-model="keyword" type="text" class="form-control" placeholder="Cari Produk" aria-label="Cari Produk with button cari">
+            </div>
+            <div class="judul mt-5">
+                <h3 class="h3"><span>NEW ARRIVAL</span></h3>
+            </div>
+            <div class="t-shirt-arrival mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-3 mt-3 d-flex align-items-stretch" v-for='kaos in filteredKaos'>
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h3>{{kaos.title}}</h3>
+                            </div>
+                            <div class="card-body text-center">
+                                <img :src="kaos.img" class="w-100">
+                                <p class="text-left font-weight-bold mt-2">{{ kaos.harga}}</p>
+                                <!-- <p class="text-justify">{{ kaos.desc }}</p> -->
+                                <button class="btn btn-beli w-100">Beli</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="judul mt-5">
+                <h3 class="h3"><span>REQUEST T-SHIRT</span></h3>
+                <p id="validation">{{ response }}</p>
+                <div class="card mb-5 mt-5">
+                    <div class="request-t-shirt mt-5 mb-5 p-2 ">
+                        <input type="text" class="form-control" placeholder="Ukuran" v-model="ukuran">
+                        <p class="m-2" v-model="ukuran">Ukuran : {{ ukuran }}</p>
+                        <input type="text" class="form-control" placeholder="Jenis Kain" v-model="jenis">
+                        <p class="m-2" v-model="jenis">Jenis Kain : {{ jenis }}</p>
+                        <input type="text" class="form-control" placeholder="warna" v-model="warna">
+                        <p class="m-2" v-model="warna">Warna : {{ warna }}</p>
+                        <button class="btn btn-dark w-100 mt-3" onclick="vm.kirimRequest()">Kirim</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-5 mb-5">
+        </div>
+        <!-- Modal Response dari server -->
+        <div class="modal fade" id="response-modal" tabindex="-1" role="dialog" aria-labelledby="responseModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Response Server</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="response-server">
+                            <p>Ukuran : {{ response.ukuran }}</p>
+                            <p>Jenis Kain : {{ response.jenis }}</p>
+                            <p>Warna : {{ response.warna }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- footer -->
+        <div class="footer">
+            <div class="container">
+                <p>Copyright 2021 Alian Hakim</p>
+            </div>
+        </div>
+
+
+        <!-- javascript -->
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js " integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj " crossorigin="anonymous "></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js " integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns " crossorigin="anonymous "></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script src="lib/vue.js "></script>
+        <script>
+            // document ready
+            (function($) {
+
+                var previousScroll = 20;
+                // scroll functions
+                $(window).scroll(function(e) {
+
+                    // add/remove class to navbar when scrolling to hide/show
+                    var scroll = $(window).scrollTop();
+                    if (scroll >= previousScroll) {
+                        $(' .navbar ').addClass("navbar-hide");
+
+                    } else if (scroll < previousScroll) {
+                        $('.navbar ').removeClass("navbar-hide");
+                    }
+                    previousScroll = scroll;
+                });
+
+            })(jQuery);
+
+            // vue js
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    keyword: '',
+                    ukuran: '',
+                    jenis: '',
+                    warna: '',
+                    response: '',
+                    kaos: [{
+                        title: 'Kaos Katun',
+                        img: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/9/1a431af0-3686-434e-b1f4-e3cba8b93010.jpg.webp?ect=4g",
+                        harga: 'Rp. 59.900',
+                        desc: "Kaos Polos Katun Bambu Abu Misty - Ali' Cloth (Cotton Bamboo Organic) - Abu Misty, S"
+                    }, {
+                        title: 'Kemeja Pria',
+                        img: 'https://images.tokopedia.net/img/cache/900/VqbcmM/2021/2/14/39451b30-39d9-4463-8992-82162301b362.jpg',
+                        harga: 'Rp. 45.500',
+                        desc: "Cocok untuk pakaian kerja, ngampus, santai nongkrong maupun acara formal"
+                    }, {
+                        title: 'Kaos Plesetan',
+                        img: 'https://images.tokopedia.net/img/cache/900/VqbcmM/2020/10/1/aac33e0e-b8f9-48a8-8c21-539229abcc10.jpg',
+                        harga: 'Rp. 52.100',
+                        desc: "Kaos Distro Cotton Comed 30'S Plesetan Logo Colestrol"
+                    }, {
+                        title: 'Kaos Islami',
+                        img: 'https://images.tokopedia.net/img/cache/900/product-1/2020/4/27/10901585/10901585_1c6f89f0-1113-43af-a86a-20e059ea6349_1280_1280',
+                        harga: 'Rp. 200.000',
+                        desc: "Samase KEMKO Panjang Navy - V03511 - S"
+                    }, ]
+                },
+                computed: {
+                    filteredKaos() {
+                        return this.kaos.filter(item => {
+                            return item.title.toLowerCase().includes(
+                                this.keyword.toLowerCase()
+                            )
+                        })
+                    }
+                },
+                methods: {
+                    kirimRequest() {
+                        let formData = new FormData()
+                        formData.append('ukuran', this.ukuran)
+                        formData.append('jenis', this.jenis)
+                        formData.append('warna', this.warna)
+
+                        // kirim data ke server
+                        let xhttp = new XMLHttpRequest()
+
+                        xhttp.onreadystatechange = function() {
+                            if (vm.ukuran == '' || this.jenis == '' || this.warna == '') {
+                                vm.response = '* Tidak boleh kosong'
+                                    // handle modal
+                                document.getElementById('response-modal').modal('hide')
+                            } else if (this.status == 200) {
+                                // vm.response = this.responseText
+                                vm.response = JSON.parse(this.response)
+                                document.getElementById('validation').style.display = "none"
+                                $('#response-modal').modal('show')
+                            } else {
+                                vm.response = 'Gagal kirim ke server'
+                            }
+                        }
+                        xhttp.open("POST", "http://localhost/vue-server/server.php", true)
+                        xhttp.send(formData)
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
